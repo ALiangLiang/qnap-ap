@@ -10,12 +10,11 @@ fi
 true ${INTERFACE:=wlan0}
 true ${SUBNET:=192.168.254.0}
 true ${AP_ADDR:=192.168.254.1}
-true ${SSID:=dockerap}
+true ${SSID:=qnapap}
 true ${CHANNEL:=11}
 true ${WPA_PASSPHRASE:=passw0rd}
 true ${HW_MODE:=g}
-true ${DRIVER:=nl80211}
-true ${HT_CAPAB:=[HT40-][SHORT-GI-20][SHORT-GI-40]}
+true ${DRIVER:=rtl871xdrv}
 true ${MODE:=host}
 
 # Attach interface to container in guest mode
@@ -36,24 +35,48 @@ if [ "$MODE" == "guest"  ]; then
     INTERFACE=wlan0
 fi
 
-if [ ! -f "/etc/hostapd.conf" ] ; then
-    cat > "/etc/hostapd.conf" <<EOF
+if [ ! -f "/etc/hostapd/hostapd.conf" ] ; then
+    cat > "/etc/hostapd/hostapd.conf" <<EOF
+# Basic configuration
 interface=${INTERFACE}
-driver=${DRIVER}
 ssid=${SSID}
-hw_mode=${HW_MODE}
 channel=${CHANNEL}
+
+# WPA and WPA2 configuration
+macaddr_acl=0
+auth_algs=1
+ignore_broadcast_ssid=0
 wpa=2
 wpa_passphrase=${WPA_PASSPHRASE}
 wpa_key_mgmt=WPA-PSK
-# TKIP is no secure anymore
-#wpa_pairwise=TKIP CCMP
-wpa_pairwise=CCMP
+wpa_pairwise=TKIP
 rsn_pairwise=CCMP
-wpa_ptk_rekey=600
+beacon_int=100
+wmm_enabled=1
+eap_reauth_period=360000000
+
+# Hardware configuration
+driver=${DRIVER}
 ieee80211n=1
-ht_capab=${HT_CAPAB}
-wmm_enabled=1 
+hw_mode=${HW_MODE}
+device_name=RTL8192CU
+manufacturer=Realtek
+
+# CTRL-Interface
+ctrl_interface=/var/run/hostapd
+ctrl_interface_group=0
+
+# Logging
+logger_syslog=-1
+logger_syslog_level=3
+logger_stdout=-1
+logger_stdout_level=2
+
+rsn_preauth=1
+rsn_preauth_interfaces=wlan0
+wpa_group_rekey=600
+wpa_ptk_rekey=600
+wpa_gmk_rekey=86400
 EOF
 
 fi
@@ -110,5 +133,5 @@ echo "Starting DHCP server .."
 dhcpd ${INTERFACE}
 
 echo "Starting HostAP daemon ..."
-/usr/sbin/hostapd /etc/hostapd.conf 
+/usr/sbin/hostapd /etc/hostapd/hostapd.conf 
 
