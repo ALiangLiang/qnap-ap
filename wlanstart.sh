@@ -37,7 +37,8 @@ if [ "$MODE" == "guest"  ]; then
     INTERFACE=wlan0
 fi
 
-cat > "/etc/hostapd/hostapd.conf" <<EOF
+if [ ! -f "/etc/hostapd.conf" ] ; then
+    cat > "/etc/hostapd.conf" <<EOF
 # Basic configuration
 interface=${INTERFACE}
 ssid=${SSID}
@@ -77,6 +78,7 @@ wpa_group_rekey=600
 wpa_ptk_rekey=600
 wpa_gmk_rekey=86400
 EOF
+fi
 
 # unblock wlan
 rfkill unblock wlan
@@ -131,7 +133,7 @@ dhcpd ${INTERFACE}
 
 echo "Starting HostAP daemon ..."
 if [ "$LOGGING" == "1" ]; then
-  /usr/local/bin/hostapd /etc/hostapd/hostapd.conf -dd | TZ=$TZ ts "%b %d %H:%M:%S :" | tee /var/log/hostapd.log
+  /usr/local/bin/hostapd /etc/hostapd.conf -dd | TZ=$TZ ts "%b %d %H:%M:%S :" | tee /var/log/hostapd.log
 else
-  /usr/local/bin/hostapd /etc/hostapd/hostapd.conf -dd | TZ=$TZ ts "%b %d %H:%M:%S :"
+  /usr/local/bin/hostapd /etc/hostapd.conf -dd | TZ=$TZ ts "%b %d %H:%M:%S :"
 fi
