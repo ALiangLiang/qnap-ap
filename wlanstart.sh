@@ -16,6 +16,8 @@ true ${WPA_PASSPHRASE:=passw0rd}
 true ${HW_MODE:=g}
 true ${DRIVER:=rtl871xdrv}
 true ${MODE:=host}
+true ${TZ:=Etc/UTC}
+true ${LOGGING:=0}
 
 # Attach interface to container in guest mode
 if [ "$MODE" == "guest"  ]; then
@@ -128,5 +130,8 @@ echo "Starting DHCP server .."
 dhcpd ${INTERFACE}
 
 echo "Starting HostAP daemon ..."
-/usr/sbin/hostapd /etc/hostapd/hostapd.conf 
-
+if [ "$LOGGING" == "1" ]; then
+  /usr/local/bin/hostapd /etc/hostapd/hostapd.conf -dd | TZ=$TZ ts "%b %d %H:%M:%S : " | tee /var/log/hostapd.log
+else
+  /usr/local/bin/hostapd /etc/hostapd/hostapd.conf -dd | TZ=$TZ ts "%b %d %H:%M:%S : "
+fi
