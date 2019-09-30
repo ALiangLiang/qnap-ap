@@ -131,7 +131,7 @@ dhcpd ${INTERFACE}
 
 echo "Starting HostAP daemon ..."
 if [ "$LOGGING" == "1" ]; then
-  /usr/local/bin/hostapd /etc/hostapd/hostapd.conf -dd | TZ=$TZ ts "%b %d %H:%M:%S : " | tee /var/log/hostapd.log
+  /usr/local/bin/hostapd /etc/hostapd/hostapd.conf -dd | TZ=$TZ ts "%b %d %H:%M:%S :" | tee /var/log/hostapd.log
 else
-  /usr/local/bin/hostapd /etc/hostapd/hostapd.conf -dd | TZ=$TZ ts "%b %d %H:%M:%S : "
+  /usr/local/bin/hostapd /etc/hostapd/hostapd.conf -dd | TZ=$TZ ts "%b %d %H:%M:%S :"
 fi
