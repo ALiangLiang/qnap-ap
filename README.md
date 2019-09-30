@@ -1,4 +1,4 @@
-# Docker container stack: hostap + dhcp server 
+# Docker Container for Setting Wi-Fi Access Point on QNAP NAS
 
 This container starts wireless access point (hostap) and dhcp server in docker
 container. It supports both host networking and network interface reattaching
@@ -63,12 +63,13 @@ and have deterministic environment with wifi interface.
 * **CHANNEL**: WIFI channel (default: 6)
 * **SUBNET**: Network subnet (default: 192.168.254.0)
 * **AP_ADDR**: Access point address (default: 192.168.254.1)
-* **SSID**: Access point SSID (default: docker-ap)
+* **SSID**: Access point SSID (default: qnap-ap)
 * **WPA_PASSPHRASE**: WPA password (default: passw0rd)
 * **HW_MODE**: WIFI mode to use (default: g) 
-* **DRIVER**: WIFI driver to use (default: nl80211)
-* **HT_CAPAB**: WIFI HT capabilities for 802.11n (default: [HT40-][SHORT-GI-20][SHORT-GI-40]) 
+* **DRIVER**: WIFI driver to use (default: rtl871xdrv)
 * **MODE**: Mode to run in guest/host (default: host)
+* **TZ**: Timezone for logging time (default: Etc/UTC)
+* **LOGGING**: Is opening logging. 0: off, 1: on (default: 0)
 
 ## License
 
@@ -76,7 +77,7 @@ MIT
 
 ## Author
 
-Jaka Hudoklin <jakahudoklin@gmail.com>
+Wei-Liang Liou <me@aliangliang.top>
 
-Thanks to https://github.com/sdelrio/rpi-hostap for providing original
-implementation.
+Thanks to https://github.com/sdelrio/rpi-hostap and https://github.com/offlinehacker/docker-ap
+for providing original implementation.
