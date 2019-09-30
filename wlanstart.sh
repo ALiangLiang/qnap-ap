@@ -35,8 +35,7 @@ if [ "$MODE" == "guest"  ]; then
     INTERFACE=wlan0
 fi
 
-if [ ! -f "/etc/hostapd/hostapd.conf" ] ; then
-    cat > "/etc/hostapd/hostapd.conf" <<EOF
+cat > "/etc/hostapd/hostapd.conf" <<EOF
 # Basic configuration
 interface=${INTERFACE}
 ssid=${SSID}
@@ -72,14 +71,10 @@ logger_syslog_level=3
 logger_stdout=-1
 logger_stdout_level=2
 
-rsn_preauth=1
-rsn_preauth_interfaces=wlan0
 wpa_group_rekey=600
 wpa_ptk_rekey=600
 wpa_gmk_rekey=86400
 EOF
-
-fi
 
 # unblock wlan
 rfkill unblock wlan
@@ -120,7 +115,7 @@ else
 fi
 echo "Configuring DHCP server .."
 
-cat > "/etc/dhcpd.conf" <<EOF
+cat > "/etc/dhcp/dhcpd.conf" <<EOF
 option domain-name-servers 8.8.8.8, 8.8.4.4;
 option subnet-mask 255.255.255.0;
 option routers ${AP_ADDR};
